@@ -10,8 +10,10 @@ import (
 func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome"))
+	r.Get("/main", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "web/views/MainPage.html")
 	})
+	fs := http.FileServer(http.Dir("web/dist/js/"))
+	r.Handle("/js/*", http.StripPrefix("/js/", fs))
 	http.ListenAndServe(":3000", r)
 }
